@@ -5,11 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="84c43731-34ad-410b-92c8-65ee9f261f16" name="Changes" comment="Add project README">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/josetin/expense_tracker/controller/TransactionController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/josetin/expense_tracker/controller/TransactionController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/josetin/expense_tracker/dto/request/CreateTransactionRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/josetin/expense_tracker/dto/request/CreateTransactionRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/josetin/expense_tracker/service/TransactionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/josetin/expense_tracker/service/TransactionService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/josetin/expense_tracker/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/josetin/expense_tracker/service/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/josetin/expense_tracker/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/josetin/expense_tracker/controller/UserController.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -127,7 +123,7 @@
       <workItem from="1768462711198" duration="1743000" />
       <workItem from="1768548253921" duration="28000" />
       <workItem from="1773331363690" duration="1369000" />
-      <workItem from="1773332756582" duration="4453000" />
+      <workItem from="1773332756582" duration="4812000" />
     </task>
     <task id="LOCAL-00001" summary="Add project README">
       <option name="closed" value="true" />

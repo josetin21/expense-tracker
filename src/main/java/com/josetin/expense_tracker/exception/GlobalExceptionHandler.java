@@ -45,4 +45,13 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.badRequest().body(error);
    }
+
+   public ResponseEntity<Map<String, Object>> handleUserAlreadyExists(UserAlreadyExistsException ex){
+        Map<String, Object> error = new HashMap<>();
+        error.put("status", 409);
+        error.put("error", "Conflict");
+        error.put("message", ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+   }
 }

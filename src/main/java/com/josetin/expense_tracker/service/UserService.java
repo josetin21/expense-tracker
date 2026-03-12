@@ -2,6 +2,7 @@ package com.josetin.expense_tracker.service;
 
 import com.josetin.expense_tracker.dto.request.RegisterUserRequest;
 import com.josetin.expense_tracker.entity.User;
+import com.josetin.expense_tracker.exception.UserAlreadyExistsException;
 import com.josetin.expense_tracker.repo.UserRepo;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,11 +23,11 @@ public class UserService {
     public User register(RegisterUserRequest request){
 
         if(userRepo.existsByUsername(request.getUsername())){
-            throw new RuntimeException("Username already exists");
+            throw new UserAlreadyExistsException("Username already exists");
         }
 
         if(userRepo.existsByEmail(request.getEmail())){
-            throw  new RuntimeException("Email already exists");
+            throw  new UserAlreadyExistsException("Email already exists");
         }
 
         User user = new User();

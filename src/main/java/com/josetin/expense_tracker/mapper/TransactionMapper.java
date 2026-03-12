@@ -15,6 +15,7 @@ public class  TransactionMapper {
         transactionResponse.setType(transaction.getType());
         transactionResponse.setDate(transaction.getDate());
         transactionResponse.setCategory_name(transaction.getCategory().getName());
+        transactionResponse.setUser_name(transaction.getUser().getUsername());
 
         return transactionResponse;
     }
