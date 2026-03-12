@@ -6,7 +6,9 @@ import com.josetin.expense_tracker.dto.response.CategoryWiseExpense;
 import com.josetin.expense_tracker.dto.response.IncomeExpenseSummaryResponse;
 import com.josetin.expense_tracker.dto.response.MonthlyExpenseResponse;
 import com.josetin.expense_tracker.dto.response.TransactionResponse;
+import com.josetin.expense_tracker.entity.User;
 import com.josetin.expense_tracker.service.TransactionService;
+import com.josetin.expense_tracker.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,69 +16,84 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.security.Principal;
 import java.util.List;
-import java.util.Map;
+
 
 @RestController
 @RequestMapping("/transaction")
 public class TransactionController {
 
     private final TransactionService transactionService;
+    private final UserService userService;
 
-    public TransactionController(TransactionService transactionService){
+    public TransactionController(TransactionService transactionService, UserService userService){
         this.transactionService = transactionService;
+        this.userService = userService;
+    }
+
+    private Long getAuthenticatedUserId(Principal principal){
+        User user = userService.getAuthenticatedUser(principal.getName());
+        return user.getId();
     }
 
     //POST
     @PostMapping()
-    public ResponseEntity<TransactionResponse> createTransaction(@Valid @RequestBody CreateTransactionRequest createTransactionRequest){
-        return ResponseEntity.ok(transactionService.createTransaction(createTransactionRequest));
+    public ResponseEntity<TransactionResponse> createTransaction(
+            @Valid @RequestBody CreateTransactionRequest request,
+            Principal principal){
+
+        Long userId = getAuthenticatedUserId(principal);
+        return ResponseEntity.ok(transactionService.createTransaction(request, userId));
     }
 
-    //GET
-    @GetMapping()
-    public List<TransactionResponse> getAllTransaction(){
-        return transactionService.getAllTransaction();
-    }
-
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<Page<TransactionResponse>> getTransactionByUser(@PathVariable Long userId, Pageable pageable){
+    @GetMapping
+    public ResponseEntity<Page<TransactionResponse>> getMyTransaction(
+            Pageable pageable,
+            Principal principal){
+        Long userId = getAuthenticatedUserId(principal);
         return ResponseEntity.ok(transactionService.getTransactionByUser(userId, pageable));
     }
 
-    @GetMapping("/user/{userId}/total-expense")
-    public ResponseEntity<BigDecimal> getTotalExpense(@PathVariable Long userId){
+    @GetMapping("/total-expense")
+    public ResponseEntity<BigDecimal> getTotalExpense(Principal principal){
+        Long userId = getAuthenticatedUserId(principal);
         return ResponseEntity.ok(transactionService.getTotalExpenseByUser(userId));
     }
 
-    @GetMapping("/user/{userId}/category-wise")
-    public ResponseEntity<CategoryWiseExpense> getCategoryWiseExpense(@PathVariable Long userId){
+    @GetMapping("/category-wise")
+    public ResponseEntity<CategoryWiseExpense> getCategoryWiseExpense(Principal principal){
+        Long userId = getAuthenticatedUserId(principal);
         return ResponseEntity.ok(transactionService.getCategoryWiseExpense(userId));
     }
 
-    @GetMapping("/user/{userId}/summary")
-    public ResponseEntity<IncomeExpenseSummaryResponse> getIncomeExpenseSummary(@PathVariable Long userId){
+    @GetMapping("/summary")
+    public ResponseEntity<IncomeExpenseSummaryResponse> getIncomeExpenseSummary(Principal principal){
+        Long userId = getAuthenticatedUserId(principal);
         return ResponseEntity.ok(transactionService.getIncomeExpenseSummary(userId));
     }
 
-    @GetMapping("/user/{userId}/monthly-expense")
-    public ResponseEntity<MonthlyExpenseResponse> getMonthlyExpense(@PathVariable Long userId){
+    @GetMapping("/monthly-expense")
+    public ResponseEntity<MonthlyExpenseResponse> getMonthlyExpense(Principal principal){
+        Long userId = getAuthenticatedUserId(principal);
         return ResponseEntity.ok(transactionService.getMonthlyExpense(userId));
     }
 
-    //PUT
     @PutMapping("/{id}")
-    public ResponseEntity<TransactionResponse> updateTransaction(@PathVariable Long id,
-                                                                 @Valid @RequestBody UpdateTranactionRequest request){
-        return ResponseEntity.ok(transactionService.updateTransaction(id, request));
+    public ResponseEntity<TransactionResponse> updateTransaction(
+            @PathVariable Long id,
+            @Valid @RequestBody UpdateTranactionRequest request,
+            Principal principal){
+        Long userId = getAuthenticatedUserId(principal);
+        return ResponseEntity.ok(transactionService.updateTransaction(id, request, userId));
     }
 
-    //DELETE
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTransaction(@PathVariable Long id){
-        transactionService.deleteTransaction(id);
-        return  ResponseEntity.noContent().build();
+    public ResponseEntity<Void> deleteTransaction(
+            @PathVariable Long id,
+            Principal principal){
+        Long userId = getAuthenticatedUserId(principal);
+        transactionService.deleteTransaction(id, userId);
+        return ResponseEntity.noContent().build();
     }
-
-
 }

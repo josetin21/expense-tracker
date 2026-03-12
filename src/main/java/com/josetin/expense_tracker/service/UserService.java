@@ -1,17 +1,12 @@
 package com.josetin.expense_tracker.service;
 
-import com.josetin.expense_tracker.dto.request.CreateUserRequest;
 import com.josetin.expense_tracker.dto.request.RegisterUserRequest;
-import com.josetin.expense_tracker.dto.response.UserResponse;
 import com.josetin.expense_tracker.entity.User;
-import com.josetin.expense_tracker.exception.ResourceNotFoundException;
-import com.josetin.expense_tracker.mapper.UserMapper;
 import com.josetin.expense_tracker.repo.UserRepo;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -42,5 +37,8 @@ public class UserService {
         return userRepo.save(user);
     }
 
-    
+    public User getAuthenticatedUser(String username){
+        return userRepo.findByUsername(username)
+                .orElseThrow(()-> new UsernameNotFoundException("User not found: " + username));
+    }
 }

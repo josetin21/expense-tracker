@@ -52,22 +52,22 @@ public class TransactionService {
     }
 
 
-    public TransactionResponse createTransaction(CreateTransactionRequest createTransactionRequest){
+    public TransactionResponse createTransaction(CreateTransactionRequest request, Long userId){
 
-        User user = userRepo.findById(createTransactionRequest.getUserId())
+        User user = userRepo.findById(userId)
                 .orElseThrow(()-> new ResourceNotFoundException("User not Found"));
 
-        Category category = categoryRepo.findByNameIgnoreCase(createTransactionRequest.getCategoryName())
+        Category category = categoryRepo.findByNameIgnoreCase(request.getCategoryName())
                 .orElseGet(()->{
                     Category newCategory = new Category();
-                    newCategory.setName(createTransactionRequest.getCategoryName());
+                    newCategory.setName(request.getCategoryName());
                     return categoryRepo.save(newCategory);
                 });
 
         Transaction transaction = new Transaction();
-        transaction.setAmount(createTransactionRequest.getAmount());
-        transaction.setType(createTransactionRequest.getType());
-        transaction.setDate(createTransactionRequest.getDate());
+        transaction.setAmount(request.getAmount());
+        transaction.setType(request.getType());
+        transaction.setDate(request.getDate());
         transaction.setUser(user);
         transaction.setCategory(category);
 
@@ -75,20 +75,19 @@ public class TransactionService {
         return transactionMapper.toResponse(savedTransaction);
     }
 
-    public void deleteTransaction(Long transactionId){
+    public void deleteTransaction(Long transactionId, Long userId){
         Transaction transaction = transactionRepo.findById(transactionId)
                 .orElseThrow(()-> new ResourceNotFoundException("Transaction not Found"));
+
+        if(!transaction.getUser().getId().equals(userId)){
+            throw new ResourceNotFoundException("Transaction not found");
+        }
 
         transaction.setDeleted(true);
         transactionRepo.save(transaction);
     }
 
-    public List<TransactionResponse> getAllTransaction(){
-        return transactionRepo.findAll()
-                .stream()
-                .map(transactionMapper::toResponse)
-                .collect(Collectors.toList());
-    }
+
 
     public Page<TransactionResponse> getTransactionByUser(Long userId, Pageable pageable){
         Page<Transaction> page = transactionRepo.findByUserIdAndDeletedFalse(userId, pageable);
@@ -97,10 +96,15 @@ public class TransactionService {
     }
 
     public TransactionResponse updateTransaction(Long transactionId,
-                                                 UpdateTranactionRequest request){
+                                                 UpdateTranactionRequest request,
+                                                 Long userId){
 
         Transaction transaction = transactionRepo.findById(transactionId)
                 .orElseThrow(()-> new ResourceNotFoundException("Transaction Not Found"));
+
+        if (!transaction.getUser().getId().equals(userId)){
+            throw new ResourceNotFoundException("Transaction Not Found");
+        }
 
         if(transaction.isDeleted()){
             throw new ResourceNotFoundException("Transaction is deleted");
