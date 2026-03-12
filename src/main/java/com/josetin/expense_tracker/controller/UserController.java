@@ -27,13 +27,4 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @GetMapping()
-    public List<UserResponse> getAllUser(){
-        return userService.getAllUser();
-    }
-
-    @GetMapping("/{id}")
-    public UserResponse getUserById(@PathVariable Long id){
-        return userService.getUserById(id);
-    }
 }

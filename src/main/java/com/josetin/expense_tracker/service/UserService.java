@@ -42,16 +42,5 @@ public class UserService {
         return userRepo.save(user);
     }
 
-    public List<UserResponse> getAllUser(){
-        return userRepo.findAll()
-                .stream()
-                .map(UserMapper::toResponse)
-                .collect(Collectors.toList());
-    }
-
-    public UserResponse getUserById(Long id){
-        User user = userRepo.findById(id)
-                .orElseThrow(()-> new ResourceNotFoundException("User not Found"));
-        return UserMapper.toResponse(user);
-    }
+    
 }
